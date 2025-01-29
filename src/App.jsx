@@ -22,13 +22,12 @@ const App = () => {
       <Route path='/' element={<Home/>}/>
       <Route path='signup' element={<SignUp/>}/>
       <Route path='login' element={<Login/>}/>
-      <Route path='chatit' element={<ChatIt/>}>
-       <Route path='questions' element={<Questions/>}></Route>
-       <Route path='timetable' element={<TimeTable/>}></Route>
-       <Route path='pdf' element={<Pdf/>}></Route>
-       <Route path='yt' element={<Yt/>}></Route>
-       <Route path='motivator' element={<Motivator />} ></Route>
-      </Route>
+      <Route path='chatit' element={<ChatIt/>}/>
+       <Route path='questions' element={<Questions/>}/>
+       <Route path='timetable' element={<TimeTable/>}/>
+       <Route path='pdf' element={<Pdf/>}/>
+       <Route path='yt' element={<Yt/>}/>
+       <Route path='motivator' element={<Motivator />}/>
      </Routes>
 
   </div>
