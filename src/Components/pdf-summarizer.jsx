@@ -1,56 +1,60 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import '../index.css';
+import ReactMarkdown from "react-markdown";
 
-function PdfSummarizer() {
-  const [file, setFile] = useState(null);
-  const [summary, setSummary] = useState("");
-  const [minWords, setMinWords] = useState(50);
+const PDFProcessor = () => {
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [markdownOutput, setMarkdownOutput] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
-  };
+    const handleFileChange = (event) => {
+        setSelectedFile(event.target.files[0]);
+    };
 
-  const handleUpload = async () => {
-    if (!file) {
-      alert("Please select a file");
-      return;
-    }
+    const handleUpload = async () => {
+        if (!selectedFile) {
+            alert("Please select a PDF file first.");
+            return;
+        }
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("min_words", minWords);
+        setLoading(true);
+        setError(null);
 
-    try {
-      const response = await axios.post("http://127.0.0.1:8000/api/summarize/", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setSummary(response.data.summary);
-    } catch (error) {
-      console.error("Error: ", error);
-      alert(error.response?.data?.error || "An error occurred");
-    }
-  };
+        const formData = new FormData();
+        formData.append("pdf", selectedFile);
 
-  return (
-    <div className="container">
-      <h2>PDF Summarizer</h2>
-      <input type="file" accept="application/pdf" onChange={handleFileChange} />
-      <input 
-        type="number" 
-        value={minWords} 
-        onChange={(e) => setMinWords(e.target.value)} 
-        placeholder="Min words for summary" 
-      />
-      <button onClick={handleUpload}>Summarize</button>
-      {summary && (
-        <div>
-          <h3>Summary:</h3>
-          <p>{summary}</p>
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/api/process_pdf/", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+
+            setMarkdownOutput(response.data.markdown_output);
+        } catch (err) {
+            setError("Error processing PDF. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="container">
+            <h2>Upload PDF for Q&A Extraction</h2>
+            <input type="file" accept="application/pdf" onChange={handleFileChange} />
+            <button onClick={handleUpload} disabled={loading}>
+                {loading ? "Processing..." : "Upload"}
+            </button>
+            
+            {error && <p className="error">{error}</p>}
+            
+            {markdownOutput && (
+                <div className="markdown-container">
+                    <h3>Generated Markdown Output</h3>
+                    <ReactMarkdown>{markdownOutput}</ReactMarkdown>
+                </div>
+            )}
         </div>
-      )}
-    </div>
-  );
-}
+    );
+};
 
-export default PdfSummarizer;
+export default PDFProcessor;
