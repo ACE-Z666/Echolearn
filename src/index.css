@@ -1,2 +1,254 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+.container-pdf {
+    max-width: 100vw;
+    margin-left: 10vw;
+    margin-right: 10vw;
+    padding: 20px;
+    overflow: hidden
+}
+
+
+.title-pdf{
+    font-family: 'Urbanist', sans-serif;
+    font-size: 3rem;
+    font-weight: 400;
+    text-align: left;
+    margin-bottom: 20px;
+    margin-top: 5vh;
+
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
+}
+
+.pdf-upload-label{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-family: 'Urbanist', sans-serif;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-right: 5px;
+    margin-bottom: 10px;
+    
+}
+
+.pdf-2{
+    width: 100%;
+    background-color: rgba(0,0,0,0.05);
+    border: 1px solid #ddd;
+    padding: 10px;
+    flex-direction: column;
+    justify-content: end;
+    backdrop-filter: blur(100px);
+    border-radius: 15px;
+    color: #111111;
+    font-family: 'Urbanist', sans-serif;
+    font-weight: 500;
+}
+
+.markdown-container {
+    backdrop-filter: blur(10px);
+    margin-top: 20px;
+}
+
+
+
+.markdown-content {
+    font-family: Poppins, sans-serif;
+    background: rgba(0,0,0, 0.05);
+    backdrop-filter: blur(10px);
+    padding: 2vw;
+
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    margin-top: 10px;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+    color: #555454;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.markdown-content p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.markdown-content li {
+    margin-bottom: 5px;
+}
+
+.rectblur-container{
+    position: fixed;
+}
+
+.rectblur1 {
+    width:23vw;
+    top:45vh;
+    left: 55vw;
+    height:17vh;
+    filter: blur(50px);
+    background-color: rgba(142, 225, 231, 1);
+    position: absolute;
+    z-index: -0.5;
+    border-radius: 70px;
+    scale: 120%;
+
+}
+
+.rectblur2 {
+    width:27vw;
+    height:27vh;
+    left : 47vw;
+    filter: blur(20px);
+    background-color: rgba(247, 255, 229, 1);
+    position: absolute;
+    z-index: -1;
+    border-radius: 70px;
+    scale: 120%;
+
+}
+
+.rectblur3 {
+    width:27vw;
+    height:27vh;
+    left : 60vw;
+    top: 16vh;
+    filter: blur(20px);
+    background-color: rgba(247, 255, 229, 1);
+    position: absolute;
+    z-index: -1;
+    border-radius: 70px;
+    scale: 120%;
+
+
+}
+
+.markdown-title{
+    font-family: 'Urbanist', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    text-align: left;
+    margin-bottom: 5px;
+    margin-top: 4vh;
+    margin-left: 10px;
+}
+
+.rectblur4 {
+    width:27vw;
+    height:27vh;
+    left : 55vw;
+    top: 62vh;
+    filter: blur(20px);
+    background-color: rgba(247, 255, 229, 1);
+    position: absolute;
+    z-index: -1;
+    border-radius: 70px;
+    scale: 120%;
+
+
+}
+
+
+
+.rectblur5 {
+    width:15vw;
+    height:27vh;
+    left : 80vw;
+    top: 28vh;
+    filter: blur(20px);
+    background-color: rgba(247, 255, 229, 1);
+    position: absolute;
+    z-index: -1;
+    border-radius: 70px;
+    border-radius: 70px;
+    scale: 120%;
+}
+
+
+.button2 {
+    margin-top: 2vh;
+    font-family: 'Urbanist', sans-serif;
+    display: inline-block;
+    transition: all 0.2s ease-in;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    color: #000000;
+    padding: 0.5em 1.7em;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 0.5em;
+    background: #e8e8e8;
+    border: 1px solid #e8e8e8;
+    box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+  }
+  
+  .button2:active {
+    color: #666;
+    box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+  }
+  
+  .button2:before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) scaleY(1) scaleX(1.25);
+    top: 100%;
+    width: 140%;
+    height: 180%;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+    display: block;
+    transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+    z-index: -1;
+  }
+  
+  .button2:after {
+    content: "";
+    position: absolute;
+    left: 55%;
+    transform: translateX(-50%) scaleY(1) scaleX(1.45);
+    top: 180%;
+    width: 160%;
+    height: 190%;
+    background-color: #8ee1e7;
+    border-radius: 50%;
+    display: block;
+    transition: all 0.5s 0.1s cubic-bezier(0.55, 0, 0.1, 1);
+    z-index: -1;
+  }
+  
+  .button2:hover {
+    color: #1b1b1b;
+    border: 1px solid #8ee1e7;
+  }
+  
+  .button2:hover:before {
+    top: -35%;
+    background-color: #8ee1e7;
+    transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+  }
+  
+  .button2:hover:after {
+    top: -45%;
+    background-color: #8ee1e7;
+    transform: translateX(-50%) scaleY(1.3) scaleX(0.8);
+  }
+  
