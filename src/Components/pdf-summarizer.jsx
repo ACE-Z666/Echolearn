@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
-import rehypeRaw from "rehype-raw"; // Import rehype-raw for HTML rendering
+import rehypeRaw from "rehype-raw"; // Allow rendering raw HTML in Markdown
+import remarkGfm from "remark-gfm"; // Enable GitHub-style Markdown (tables, strikethrough, etc.)
 import "../index.css";
 import Rectblur from "./rectblur";
 
@@ -25,53 +26,43 @@ const PDFProcessor = () => {
             alert("Please select a PDF file first.");
             return;
         }
-
+    
         if (fileSizeError) {
             alert("File is too large. Please select a file smaller than 10MB.");
             return;
         }
-
+    
         setLoading(true);
         setError(null);
-
+    
         const formData = new FormData();
         formData.append("pdf_file", selectedFile);
-
+    
         try {
-            const backendUrl = "http://127.0.0.1:8000"; // Hardcode the backend URL temporarily
+            const backendUrl = "http://127.0.0.1:8000"; // Backend URL
             console.log("📡 Sending request to:", `${backendUrl}/api/process_pdf/`);
-            console.log("📂 File being sent:", selectedFile);
-
+    
             const response = await axios.post(`${backendUrl}/api/process_pdf/`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
-
-            console.log("✅ Response received:", response);
-            console.log("📜 Response Data:", response.data);
-
-            // Check if the response has the 'choices' array and process accordingly
-            if (response.data?.choices && response.data.choices.length > 0) {
-                // Extract text from the first choice object
-                setMarkdownOutput(response.data.choices[0]?.text || "No content available");
-            } else {
-                // Fallback if no 'choices' field is present
-                setMarkdownOutput(response.data?.markdown_output || "No content available");
-            }
-
+    
+            console.log("✅ Response received:", response.data);
+    
+            let markdownText = response.data?.choices?.[0]?.message?.content || response.data?.markdown_output || "No content available";
+    
+            // Remove "```markdown" and trailing "```"
+            markdownText = markdownText.replace(/^```markdown\s*/, "").replace(/```$/, "").trim();
+    
+            setMarkdownOutput(markdownText);
+    
         } catch (err) {
-            console.error("❌ Full Error Object:", err); // Log the full error object
-            console.error("❌ Response:", err.response); // Log the response (if available)
-
-            if (err.response) {
-                setError(err.response.data?.error || "Error processing PDF. Please try again.");
-            } else {
-                setError("Network error or backend not reachable.");
-            }
+            console.error("❌ Full Error Object:", err);
+            setError(err.response?.data?.error || "Failed to process the PDF. Check the backend logs.");
         } finally {
             setLoading(false);
         }
     };
-
+    
     return (
         <div className="container-pdf">
             <div className="rectblur-container">
@@ -96,9 +87,7 @@ const PDFProcessor = () => {
             {fileSizeError && <p className="error">File size exceeds 10MB. Please select a smaller file.</p>}
 
             <button className="button2" onClick={handleUpload} disabled={loading}>
-                {loading ? "Wait few Seconds.." : (
-                    "Upload"
-                )}
+                {loading ? "Wait few Seconds.." : "Upload"}
             </button>
 
             {error && <p className="error">{error}</p>}
@@ -106,8 +95,8 @@ const PDFProcessor = () => {
             {markdownOutput && (
                 <div className="markdown-container">
                     <h3 className="markdown-title">Generated Markdown Output</h3>
-                    {/* Use rehypeRaw to render HTML in Markdown */}
-                    <ReactMarkdown rehypePlugins={[rehypeRaw]} className="markdown-content">
+                    {/* Render Markdown properly with GitHub-style features */}
+                    <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]} className="markdown-content">
                         {markdownOutput}
                     </ReactMarkdown>
                 </div>
