@@ -1,11 +1,11 @@
 import React from 'react'
 
-const timeTable = () => {
+const timetable = () => {
   return (
     <div>
-      <h1>TimeTable</h1>
+      
     </div>
   )
 }
 
-export default timeTable
+export default timetable

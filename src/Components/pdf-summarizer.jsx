@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm"; // Enable GitHub-style Markdown (tables, str
 import "../index.css";
 import Rectblur from "./rectblur";
 
+
 const PDFProcessor = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [markdownOutput, setMarkdownOutput] = useState("");
@@ -94,7 +95,7 @@ const PDFProcessor = () => {
 
             {markdownOutput && (
                 <div className="markdown-container">
-                    <h3 className="markdown-title">Generated Markdown Output</h3>
+                    <h3 className="markdown-title">Summarized Output</h3>
                     {/* Render Markdown properly with GitHub-style features */}
                     <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]} className="markdown-content">
                         {markdownOutput}
