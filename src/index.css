@@ -354,6 +354,11 @@
   .input-group {
     margin-bottom: 20px;
   }
+
+  .input-group-container{
+    display: flex;
+    gap: 1rem;
+  }
   
   .input-group label {
     display: block;

@@ -25,7 +25,7 @@ const Login = () => {
 
         <form>
           {!isLogin && (
-            <>
+            <div className='input-group-container'>
               <div className="input-group">
                 <label>Username</label>
                 <input
@@ -42,7 +42,7 @@ const Login = () => {
                   className="input-field"
                 />
               </div>
-            </>
+            </div>
           )}
 
           <div className="input-group">
