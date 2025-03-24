@@ -1,321 +1,171 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import '../index.css'
-import { PDFDocument } from 'pdf-lib';
+import axios from 'axios';
+import * as pdfjs from 'pdfjs-dist';
 
-// API Configuration
-const API_CONFIG = {
-  API_KEY: "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",
-  API_URL: "https://openrouter.ai/api/v1/chat/completions",
-  MODEL: "google/gemini-2.0-flash-thinking-exp:free"
-};
+// Import the worker from the correct location
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
+
+// Set the worker
+pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+
+const API_KEY = "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";
+const API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 const FlashCards = () => {
-  const [file, setFile] = useState(null);
-  const [questions, setQuestions] = useState([]);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [showAnswer, setShowAnswer] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileName, setFileName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [flashCards, setFlashCards] = useState([]);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [showAnswer, setShowAnswer] = useState(false);
 
-  const handleFileUpload = async (event) => {
+  const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file && file.type === 'application/pdf') {
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
-        setError('File size must be less than 10MB');
-        return;
-      }
-      setFile(file);
-      await processPDF(file);
-    } else {
-      setError('Please upload a valid PDF file');
-    }
+    setSelectedFile(file);
+    setFileName(file ? file.name : "");
   };
 
   const extractTextFromPDF = async (file) => {
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer);
-      const pages = pdfDoc.getPages();
-      let fullText = '';
-
-      for (let i = 0; i < pages.length; i++) {
-        const page = pages[i];
-        const text = await page.getText();
-        fullText += text + '\n';
-      }
-
-      return fullText;
-    } catch (error) {
-      console.error('Error extracting text from PDF:', error);
-      throw new Error('Failed to extract text from PDF');
-    }
-  };
-
-  const generateQuestions = async (text) => {
-    const prompt = `Generate 15 questions and answers from the following text. Format the response as a JSON array of objects, each with 'question' and 'answer' fields. The questions should test understanding of key concepts. Text: ${text}`;
-
-    const payload = {
-      model: API_CONFIG.MODEL,
-      messages: [
-        {
-          role: "system",
-          content: "You are an AI that creates educational questions and answers. Format your response as valid JSON."
-        },
-        {
-          role: "user",
-          content: prompt
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        try {
+          const typedarray = new Uint8Array(event.target.result);
+          const pdf = await pdfjs.getDocument({ data: typedarray }).promise;
+          let fullText = '';
+          
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            fullText += textContent.items.map(item => item.str).join(' ');
+          }
+          resolve(fullText);
+        } catch (error) {
+          console.error('Error processing PDF:', error);
+          resolve(''); // Return empty string in case of error
         }
-      ]
-    };
-
-    const response = await fetch(API_CONFIG.API_URL, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${API_CONFIG.API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
+      };
+      reader.readAsArrayBuffer(file);
     });
-
-    if (!response.ok) {
-      throw new Error('API request failed');
-    }
-
-    const data = await response.json();
-    const content = data.choices[0].message.content;
-    
-    try {
-      // Parse the JSON response from the API
-      const parsedQuestions = JSON.parse(content);
-      return parsedQuestions;
-    } catch (error) {
-      console.error('Failed to parse API response:', error);
-      throw new Error('Failed to parse questions from API response');
-    }
   };
 
-  const processPDF = async (file) => {
+  const generateFlashCards = async () => {
+    if (!selectedFile) {
+      setError("Please select a PDF file first.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
-    
+
     try {
-      // Extract text from PDF
-      const extractedText = await extractTextFromPDF(file);
+      const pdfText = await extractTextFromPDF(selectedFile);
       
-      // Generate questions using the API
-      const generatedQuestions = await generateQuestions(extractedText);
-      
-      setQuestions(generatedQuestions);
+      const response = await axios.post(
+        API_URL,
+        {
+          messages: [{
+            role: "user",
+            content: `Generate exactly 15 question-answer pairs from the following text. Format the response as a JSON array of objects, each with 'question' and 'answer' keys. Make questions that test understanding of key concepts. Use only information from the provided text: ${pdfText}`
+          }],
+          model: "mistralai/mistral-small-3.1-24b-instruct:free",
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${API_KEY}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      const cards = JSON.parse(response.data.choices[0].message.content);
+      setFlashCards(cards);
+      setCurrentCardIndex(0);
+      setShowAnswer(false);
     } catch (err) {
-      console.error('Error processing PDF:', err);
-      setError('Failed to process PDF: ' + err.message);
+      setError("Failed to generate flash cards. Please try again.");
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleNextQuestion = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(prev => prev + 1);
+  const nextCard = () => {
+    if (currentCardIndex < flashCards.length - 1) {
+      setCurrentCardIndex(currentCardIndex + 1);
       setShowAnswer(false);
     }
   };
 
-  const handleAnswer = (isCorrect) => {
-    // Here you can implement logic to track correct/incorrect answers
-    handleNextQuestion();
+  const previousCard = () => {
+    if (currentCardIndex > 0) {
+      setCurrentCardIndex(currentCardIndex - 1);
+      setShowAnswer(false);
+    }
   };
 
   return (
-    <Container>
-      <Title>FlashCards</Title>
-      
-      {!questions.length && (
-        <UploadSection>
-          <UploadLabel htmlFor="pdf-upload">
-            {file ? file.name : 'Upload PDF (Max 10MB)'}
-            <input
-              id="pdf-upload"
-              type="file"
-              accept=".pdf"
-              onChange={handleFileUpload}
-              style={{ display: 'none' }}
-            />
-          </UploadLabel>
-          {error && <ErrorMessage>{error}</ErrorMessage>}
-        </UploadSection>
+    <div className="flashcards-container">
+      <div className="upload-section">
+        <h2>Create Your Study Cards</h2>
+        <div className="file-input-container">
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={handleFileChange}
+            id="pdf-upload"
+            className="file-input"
+          />
+          <label htmlFor="pdf-upload" className="file-label">
+            {fileName || "Choose PDF File"}
+          </label>
+        </div>
+        <button 
+          className="generate-btn"
+          onClick={generateFlashCards}
+          disabled={loading}
+        >
+          {loading ? "Generating Cards..." : "Generate Flash Cards"}
+        </button>
+        {error && <p className="error-message">{error}</p>}
+      </div>
+
+      {flashCards.length > 0 && (
+        <div className="flashcard-section">
+          <div className="flashcard" onClick={() => setShowAnswer(!showAnswer)}>
+            <div className="card-content">
+              <div className="card-number">Card {currentCardIndex + 1} of {flashCards.length}</div>
+              <div className="question">{flashCards[currentCardIndex].question}</div>
+              {showAnswer && (
+                <div className="answer">{flashCards[currentCardIndex].answer}</div>
+              )}
+              <div className="card-hint">
+                {!showAnswer ? "Click to reveal answer" : "Click to hide answer"}
+              </div>
+            </div>
+          </div>
+
+          <div className="navigation-buttons">
+            <button 
+              onClick={previousCard}
+              disabled={currentCardIndex === 0}
+              className="nav-btn"
+            >
+              Previous
+            </button>
+            <button 
+              onClick={nextCard}
+              disabled={currentCardIndex === flashCards.length - 1}
+              className="nav-btn"
+            >
+              Next
+            </button>
+          </div>
+        </div>
       )}
-
-      {loading && <LoadingMessage>Processing PDF...</LoadingMessage>}
-
-      {questions.length > 0 && (
-        <FlashCardContainer>
-          <QuestionCounter>
-            Question {currentQuestion + 1} of {questions.length}
-          </QuestionCounter>
-          
-          <Card>
-            <QuestionText>{questions[currentQuestion]?.question}</QuestionText>
-            
-            {!showAnswer ? (
-              <ShowAnswerButton onClick={() => setShowAnswer(true)}>
-                Show Answer
-              </ShowAnswerButton>
-            ) : (
-              <>
-                <AnswerText>{questions[currentQuestion]?.answer}</AnswerText>
-                <ValidationButtons>
-                  <Button correct onClick={() => handleAnswer(true)}>
-                    Correct
-                  </Button>
-                  <Button onClick={() => handleAnswer(false)}>
-                    Incorrect
-                  </Button>
-                </ValidationButtons>
-              </>
-            )}
-          </Card>
-
-          <NextButton 
-            onClick={handleNextQuestion}
-            disabled={currentQuestion === questions.length - 1}
-          >
-            Next Question
-          </NextButton>
-        </FlashCardContainer>
-      )}
-    </Container>
+    </div>
   );
 };
-
-// Styled Components
-const Container = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-`;
-
-const Title = styled.h1`
-  text-align: center;
-  color: #333;
-  margin-bottom: 30px;
-`;
-
-const UploadSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-`;
-
-const UploadLabel = styled.label`
-  padding: 15px 25px;
-  background-color: #4CAF50;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #45a049;
-  }
-`;
-
-const ErrorMessage = styled.div`
-  color: red;
-  margin-top: 10px;
-`;
-
-const LoadingMessage = styled.div`
-  text-align: center;
-  margin: 20px 0;
-`;
-
-const FlashCardContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-`;
-
-const QuestionCounter = styled.div`
-  font-size: 1.1em;
-  color: #666;
-`;
-
-const Card = styled.div`
-  width: 100%;
-  max-width: 600px;
-  min-height: 300px;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  background: white;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`;
-
-const QuestionText = styled.h2`
-  font-size: 1.5em;
-  color: #333;
-  margin-bottom: 20px;
-  text-align: center;
-`;
-
-const AnswerText = styled.p`
-  font-size: 1.2em;
-  color: #666;
-  text-align: center;
-`;
-
-const ShowAnswerButton = styled.button`
-  padding: 10px 20px;
-  background-color: #2196F3;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1.1em;
-  margin-top: auto;
-
-  &:hover {
-    background-color: #1976D2;
-  }
-`;
-
-const ValidationButtons = styled.div`
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 20px;
-`;
-
-const Button = styled.button`
-  padding: 10px 20px;
-  background-color: ${props => props.correct ? '#4CAF50' : '#f44336'};
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1em;
-
-  &:hover {
-    background-color: ${props => props.correct ? '#45a049' : '#d32f2f'};
-  }
-
-  &:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }
-`;
-
-const NextButton = styled(Button)`
-  background-color: #2196F3;
-  &:hover {
-    background-color: #1976D2;
-  }
-`;
 
 export default FlashCards;
