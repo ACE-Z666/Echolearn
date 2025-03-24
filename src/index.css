@@ -1801,3 +1801,77 @@ button:hover {
   }
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Add smooth transitions */
+button, input {
+  transition: all 0.3s ease;
+}
+
+/* Make the app responsive */
+@media (max-width: 768px) {
+  .Container {
+    padding: 10px;
+  }
+
+  .Card {
+    padding: 20px;
+    min-height: 250px;
+  }
+
+  .QuestionText {
+    font-size: 1.2em;
+  }
+
+  .AnswerText {
+    font-size: 1em;
+  }
+
+  .ValidationButtons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .ValidationButtons button {
+    width: 100%;
+  }
+}
+
+/* Add some animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.Card {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Improve accessibility */
+:focus {
+  outline: 2px solid #2196F3;
+  outline-offset: 2px;
+}
+
+/* Better button hover states */
+button:active {
+  transform: scale(0.98);
+}
+

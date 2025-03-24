@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Rectblur from './Rectblur.jsx';
+import Rectblur from './rectblur.jsx';
 import Navbar from "./Navbar.jsx";
 const Home = () => {
   return (<>
