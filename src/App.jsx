@@ -7,7 +7,7 @@ import Login from './Components/login'
 import Questions from './Components/Questions'
 import TimeTable from './Components/time-table'
 import Pdf from './Components/pdf-summarizer'
-import Yt from './Components/yt-summarizer'
+import Fc from './Components/flashCards'
 import Motivator from './Components/Motivator'
 
 
@@ -24,7 +24,7 @@ const App = () => {
        <Route path='questions' element={<Questions/>}/>
        <Route path='timetable' element={<TimeTable/>}/>
        <Route path='pdf' element={<Pdf/>}/>
-       <Route path='yt' element={<Yt/>}/>
+       <Route path='fcards' element={<Fc/>}/>
        <Route path='motivator' element={<Motivator />}/>
      </Routes>
 
