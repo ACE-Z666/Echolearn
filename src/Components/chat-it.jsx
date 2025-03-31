@@ -1,9 +1,44 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 import '../index.css';
+
+// Add API URL constant at the top
+const API_URL = 'http://127.0.0.1:8000';
+
+// Add the sendQuery function
+const sendQuery = async (question, chatHistory) => {
+  try {
+    const response = await fetch(`${API_URL}/api/query`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: question,
+        chat_history: chatHistory
+      }),
+      mode: 'cors',
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error details:', error);
+    throw error;
+  }
+};
 
 const ChatIt = () => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
+  const [chatHistory, setChatHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const messagesEndRef = useRef(null);
@@ -34,26 +69,21 @@ const ChatIt = () => {
       setIsLoading(true);
       setError(null);
 
-      console.log('Sending request to API...'); // Debug log
+      // Update chat history with the new user message
+      const updatedChatHistory = [
+        ...chatHistory,
+        { role: 'user', content: inputMessage }
+      ];
+      setChatHistory(updatedChatHistory);
 
-      const response = await fetch('http://localhost:8000/api/query', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: inputMessage
-        })
+      console.log('Sending request to API...', {
+        query: inputMessage,
+        chat_history: updatedChatHistory
       });
 
-      console.log('Response received:', response.status); // Debug log
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Data received:', data); // Debug log
+      // Use the sendQuery function instead of direct fetch
+      const data = await sendQuery(inputMessage, updatedChatHistory);
+      console.log('Data received:', data);
 
       if (data.error) {
         throw new Error(data.error);
@@ -71,11 +101,17 @@ const ChatIt = () => {
         })) || []
       };
 
+      // Update chat history with the bot's response
+      setChatHistory(prev => [...prev, { role: 'assistant', content: data.answer }]);
       setMessages(prevMessages => [...prevMessages, botMessage]);
 
     } catch (error) {
-      console.error('Error in handleSubmit:', error); // Debug log
-      setError(error.message);
+      console.error('Detailed error:', {
+        message: error.message,
+        stack: error.stack,
+        error: error
+      });
+      setError(`Failed to fetch: ${error.message}`);
       
       // Add error message to chat
       const errorMessage = {
@@ -118,7 +154,14 @@ const ChatIt = () => {
                 {message.isUser ? '👤' : '🤖'}
               </div>
               <div className={`message-bubble ${message.isError ? 'error-message' : ''}`}>
-                <p>{message.text}</p>
+                <div className="markdown-content">
+                  <ReactMarkdown 
+                    remarkPlugins={[remarkGfm]}
+                    rehypePlugins={[rehypeRaw]}
+                  >
+                    {message.text}
+                  </ReactMarkdown>
+                </div>
                 <span className="timestamp">{message.timestamp}</span>
                 {message.sources && message.sources.length > 0 && (
                   <div className="sources">
@@ -127,7 +170,14 @@ const ChatIt = () => {
                       {message.sources.map((source, idx) => (
                         <li key={idx}>
                           {source.source} {source.page ? `(Page ${source.page})` : ''}
-                          <p className="source-content">{source.content}</p>
+                          <div className="source-content">
+                            <ReactMarkdown
+                              remarkPlugins={[remarkGfm]}
+                              rehypePlugins={[rehypeRaw]}
+                            >
+                              {source.content}
+                            </ReactMarkdown>
+                          </div>
                         </li>
                       ))}
                     </ul>

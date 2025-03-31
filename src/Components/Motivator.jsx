@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Motivator.css';
 
 const Motivator = () => {
   const [problem, setProblem] = useState('');
@@ -123,24 +124,43 @@ Ensure your response is valid JSON and includes all fields.`;
         {motivation && (
           <div className="motivation-response">
             <div className={`motivation-card ${motivation.isError ? 'error-card' : ''}`}>
-              <div className="motivation-icon">💪</div>
-              <p className="motivation-text">{motivation.response}</p>
-              
-              {motivation.quote && motivation.author && (
-                <div className="motivation-quote">
-                  <p>"{motivation.quote}"</p>
-                  <span>- {motivation.author}</span>
-                </div>
-              )}
+              {!motivation.isError && (
+                <>
+                  <div className="motivation-main">
+                    <div className="motivation-icon">✨</div>
+                    <p className="motivation-message">{motivation.response}</p>
+                  </div>
 
-              {motivation.steps && motivation.steps.length > 0 && (
-                <div className="motivation-steps">
-                  <h3>Action Steps:</h3>
-                  <ul>
-                    {motivation.steps.map((step, index) => (
-                      <li key={index}>{step}</li>
-                    ))}
-                  </ul>
+                  {motivation.quote && motivation.author && (
+                    <div className="motivation-quote">
+                      <div className="quote-icon">"</div>
+                      <blockquote>
+                        <p>{motivation.quote}</p>
+                        <footer>— {motivation.author}</footer>
+                      </blockquote>
+                    </div>
+                  )}
+
+                  {motivation.steps && motivation.steps.length > 0 && (
+                    <div className="motivation-steps">
+                      <h3>Your Action Plan</h3>
+                      <ol>
+                        {motivation.steps.map((step, index) => (
+                          <li key={index}>
+                            <span className="step-number">{index + 1}</span>
+                            <span className="step-text">{step}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
+                </>
+              )}
+              
+              {motivation.isError && (
+                <div className="error-message">
+                  <div className="error-icon">⚠️</div>
+                  <p>{motivation.response}</p>
                 </div>
               )}
             </div>
