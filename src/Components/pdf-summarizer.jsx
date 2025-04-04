@@ -40,7 +40,7 @@ const PDFProcessor = () => {
         formData.append("pdf_file", selectedFile);
     
         try {
-            const backendUrl = "http://127.0.0.1:8000"; // Backend URL
+            const backendUrl = "http://127.0.0.1:8080"; // Backend URL
             console.log("📡 Sending request to:", `${backendUrl}/api/process_pdf/`);
     
             const response = await axios.post(`${backendUrl}/api/process_pdf/`, formData, {

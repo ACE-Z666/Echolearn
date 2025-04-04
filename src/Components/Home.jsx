@@ -2,11 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Rectblur from './rectblur.jsx';
 import Navbar from "./Navbar.jsx";
-const Home = () => {
-  return (<>
-  <Navbar/>
-    <div className="home-container">
+import { useAuth } from '../context/AuthContext';
 
+const Home = () => {
+  const { isAuthenticated } = useAuth();
+
+  return (<>
+    <Navbar/>
+    <div className="home-container">
       <div className="rectblur-container">
         <Rectblur />
       </div>
@@ -20,15 +23,23 @@ const Home = () => {
             Your AI-powered learning companion. Upload documents, ask questions, and get instant, accurate answers.
           </p>
           <div className="hero-buttons">
-            <Link to="/chat" className="primary-button">
-              Start Learning
-            </Link>
-            <Link to="/upload" className="secondary-button">
-              Upload Documents
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link to="/chatit" className="primary-button">
+                  Start Learning
+                </Link>
+                <Link to="/pdf" className="secondary-button">
+                  Upload Documents
+                </Link>
+              </>
+            ) : (
+              <Link to="/login" className="primary-button">
+                Get Started
+              </Link>
+            )}
           </div>
         </div>
-        </section>
+      </section>
 
       {/* Features Section */}
       <section className="features-section">
@@ -84,14 +95,19 @@ const Home = () => {
         <div className="cta-content">
           <h2>Ready to Start Learning?</h2>
           <p>Join thousands of students who are already using Echolearn</p>
-          <Link to="/chat" className="cta-button">
-            Try It Now
-          </Link>
+          {isAuthenticated ? (
+            <Link to="/chatit" className="cta-button">
+              Try It Now
+            </Link>
+          ) : (
+            <Link to="/login" className="cta-button">
+              Get Started
+            </Link>
+          )}
         </div>
       </section>
     </div>
-    </>
-  );
+  </>);
 };
 
 export default Home;

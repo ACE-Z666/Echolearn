@@ -131,7 +131,7 @@ const ChatIt = () => {
     <div className="chat-container">
       {/* Header */}
       <div className="chat-header">
-        <h1>Chat-it</h1>
+        <h1>ECHO AI</h1>
         {error && <div className="error-banner">{error}</div>}
       </div>
 

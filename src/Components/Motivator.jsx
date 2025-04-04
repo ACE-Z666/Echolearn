@@ -11,17 +11,15 @@ const Motivator = () => {
   const API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
   const formatPrompt = (problem) => {
-    return `As a motivational coach, please provide encouragement for this problem: "${problem}"
+    return `As a motivational coach, provide encouragement for this problem: "${problem}"
 
-Please respond ONLY with a JSON object in this exact format:
+You MUST respond with ONLY a JSON object in this EXACT format, with NO additional text before or after:
 {
-  "response": "A detailed motivational message addressing the problem",
-  "quote": "A relevant inspirational quote",
+  "response": "Your detailed motivational message here",
+  "quote": "Your chosen inspirational quote here",
   "author": "The author of the quote",
-  "steps": ["Specific action step 1", "Specific action step 2", "Specific action step 3"]
-}
-
-Ensure your response is valid JSON and includes all fields.`;
+  "steps": ["First action step", "Second action step", "Third action step"]
+}`;
   };
 
   const handleSubmit = async (e) => {
@@ -43,13 +41,15 @@ Ensure your response is valid JSON and includes all fields.`;
           messages: [
             {
               role: "system",
-              content: "You are a motivational coach that provides encouragement and actionable advice."
+              content: "You are a motivational coach. You MUST respond with valid JSON only, no additional text. Format: {\"response\": string, \"quote\": string, \"author\": string, \"steps\": string[]}"
             },
             {
               role: "user",
               content: formatPrompt(problem)
             }
-          ]
+          ],
+          temperature: 0.7,
+          max_tokens: 1000
         })
       });
 
@@ -58,29 +58,33 @@ Ensure your response is valid JSON and includes all fields.`;
       }
 
       const data = await response.json();
-      console.log("API Response:", data); // For debugging
+      const responseText = data.choices[0].message.content.trim();
 
-      const responseText = data.choices[0].message.content;
-      console.log("Response Text:", responseText); // For debugging
-
+      // Try to parse the response as JSON
       let motivationalContent;
       try {
-        motivationalContent = JSON.parse(responseText);
+        // Remove any potential markdown code block markers
+        const cleanedResponse = responseText.replace(/^```json\n?|\n?```$/g, '');
+        motivationalContent = JSON.parse(cleanedResponse);
+        
+        // Validate the response format
+        if (!motivationalContent.response || 
+            !motivationalContent.quote || 
+            !motivationalContent.author || 
+            !Array.isArray(motivationalContent.steps) || 
+            motivationalContent.steps.length === 0) {
+          throw new Error('Invalid response format');
+        }
       } catch (parseError) {
         console.error('Failed to parse API response:', parseError);
-        motivationalContent = {
-          response: responseText,
-          quote: null,
-          author: null,
-          steps: []
-        };
+        throw new Error('Failed to generate a proper motivational response. Please try again.');
       }
 
       setMotivation(motivationalContent);
     } catch (error) {
       console.error('Error:', error);
       setMotivation({
-        response: `Error: ${error.message || "Couldn't process your request. Please try again."}`,
+        response: error.message,
         quote: null,
         author: null,
         steps: [],

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
@@ -13,9 +14,6 @@ const FlashCards = () => {
   const [fileName, setFileName] = useState("");
   const [fileSizeError, setFileSizeError] = useState(false);
   const [visibleAnswers, setVisibleAnswers] = useState({});
-
-  const API_KEY = "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";
-  const API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -45,79 +43,26 @@ const FlashCards = () => {
     setLoading(true);
     setError(null);
 
+    const formData = new FormData();
+    formData.append("pdf_file", selectedFile);
+
     try {
-      // Read the PDF file
-      const fileReader = new FileReader();
-      
-      fileReader.onload = async (e) => {
-        const pdfData = e.target.result;
-        
-        try {
-          // Send the extracted text to OpenRouter AI for Q&A generation
-          console.log("📡 Sending text to OpenRouter AI...");
-          
-          const aiResponse = await fetch(API_URL, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${API_KEY}`,
-              'Content-Type': 'application/json',
-              'HTTP-Referer': window.location.origin,
-              'X-Title': 'Flash Cards Generator'
-            },
-            body: JSON.stringify({
-              model: "mistralai/mistral-small-3.1-24b-instruct:free",
-              messages: [
-                {
-                  role: "system",
-                  content: "You are a helpful assistant that creates educational flash cards. Always respond with valid JSON."
-                },
-                {
-                  role: "user",
-                  content: `Based on the following PDF content, generate 15 question-answer pairs. Format your response EXACTLY as a JSON array of objects, each with 'question' and 'answer' fields. Content: ${pdfData}`
-                }
-              ]
-            })
-          });
+      const backendUrl = "http://127.0.0.1:8080";
+      console.log("📡 Sending request to:", `${backendUrl}/api/generate_flashcards/`);
 
-          if (!aiResponse.ok) {
-            throw new Error(`OpenRouter AI API error: ${aiResponse.status}`);
-          }
+      const response = await axios.post(`${backendUrl}/api/generate_flashcards/`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-          const result = await aiResponse.json();
-          
-          if (!result.choices?.[0]?.message?.content) {
-            throw new Error("Invalid response format from OpenRouter AI");
-          }
+      console.log("✅ Response received:", response.data);
 
-          console.log("✅ AI Response:", result);
-
-          try {
-            const qaContent = JSON.parse(result.choices[0].message.content);
-            if (!Array.isArray(qaContent)) {
-              throw new Error("Response is not an array");
-            }
-            setFlashCards(qaContent);
-          } catch (parseError) {
-            console.error("JSON Parse Error:", parseError);
-            throw new Error("Failed to parse AI response as JSON");
-          }
-
-        } catch (err) {
-          console.error("Error processing content:", err);
-          setError(err.message);
-        }
-      };
-
-      fileReader.onerror = () => {
-        setError("Failed to read the PDF file");
-        setLoading(false);
-      };
-
-      fileReader.readAsText(selectedFile);
+      // Parse the flashcards from the response
+      const qaContent = response.data?.flashcards || [];
+      setFlashCards(qaContent);
 
     } catch (err) {
-      console.error("❌ Error Details:", err);
-      setError(err.message || "Failed to process the PDF and generate flash cards");
+      console.error("❌ Full Error Object:", err);
+      setError(err.response?.data?.error || "Failed to process the PDF. Check the backend logs.");
     } finally {
       setLoading(false);
     }

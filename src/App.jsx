@@ -10,25 +10,20 @@ import Pdf from './Components/pdf-summarizer'
 import Fc from './Components/flashCards'
 import Motivator from './Components/Motivator'
 
-
-
-
-
 const App = () => {
   return (
-  <div>
-    <Routes>
-      <Route path='/' element={<Home/>}/>
-      <Route path='login' element={<Login/>}/>
-      <Route path='chatit' element={<ChatIt/>}/>
-       <Route path='questions' element={<Questions/>}/>
-       <Route path='timetable' element={<TimeTable/>}/>
-       <Route path='pdf' element={<Pdf/>}/>
-       <Route path='fcards' element={<Fc/>}/>
-       <Route path='motivator' element={<Motivator />}/>
-     </Routes>
-
-  </div>
+    <div className="app-container">
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/chatit" element={<ChatIt />} />
+        <Route path="/questions" element={<Questions />} />
+        <Route path="/timetable" element={<TimeTable />} />
+        <Route path="/pdf" element={<Pdf />} />
+        <Route path="/fcards" element={<Fc />} />
+        <Route path="/motivator" element={<Motivator />} />
+      </Routes>
+    </div>
   )
 }
 
