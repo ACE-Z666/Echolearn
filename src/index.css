@@ -533,7 +533,8 @@
 }
 
 .user-message .message-bubble {
-  background-color: #e7f5ff;
+  background-color: #b8ffc8;
+  border-radius: 10px;
 }
 
 .message-bubble p {
@@ -599,12 +600,12 @@
 }
 
 .chat-input:focus {
-  border-color: #2563eb;
+  border-color: #52d85d;
 }
 
 .send-button {
   padding: 0.75rem 1.5rem;
-  background-color: #2563eb;
+  background-color: #34b351;
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -614,11 +615,11 @@
 }
 
 .send-button:hover {
-  background-color: #1d4ed8;
+  background-color: #37ee2e;
 }
 
 .send-button:disabled {
-  background-color: #93c5fd;
+  background-color: #9effa3;
   cursor: not-allowed;
 }
 
