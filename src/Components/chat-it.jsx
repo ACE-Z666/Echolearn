@@ -5,22 +5,21 @@ import rehypeRaw from 'rehype-raw';
 import '../index.css';
 
 // Add API URL constant at the top
-const API_URL = 'http://127.0.0.1:8000';
+const API_URL = 'https://echo-chat-production.up.railway.app';
 
 // Add the sendQuery function
 const sendQuery = async (question, chatHistory) => {
   try {
-    const response = await fetch(`${API_URL}/api/query`, {
-      method: 'POST',
+    const response = await fetch("https://echo-chat-production.up.railway.app/api/query", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({
+      body: JSON.stringify({ 
         query: question,
-        chat_history: chatHistory
+        chat_history: chatHistory 
       }),
-      mode: 'cors',
-      credentials: 'include'
+      credentials: "include"
     });
 
     if (!response.ok) {
