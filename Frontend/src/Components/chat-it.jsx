@@ -10,7 +10,7 @@ const API_URL = 'https://echo-chat-production.up.railway.app';
 // Add the sendQuery function
 const sendQuery = async (question, chatHistory) => {
   try {
-    const response = await fetch("https://echo-chat-production.up.railway.app/api/query", {
+    const response = await fetch(API_URL + "/api/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

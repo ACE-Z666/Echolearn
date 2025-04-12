@@ -135,6 +135,6 @@ if __name__ == "__main__":
     uvicorn.run(
         "app:app",
         host="0.0.0.0",  # Changed from 0.0.0.0 to 127.0.0.1 for local development
-        port=int(os.environ.get("PORT", 8000)),
+        port=int(os.environ.get(8000)),
         reload=True,  # Enable auto-reload for development
     )
