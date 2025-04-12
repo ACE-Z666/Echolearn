@@ -19,7 +19,6 @@ const sendQuery = async (question, chatHistory) => {
         query: question,
         chat_history: chatHistory 
       }),
-      credentials: "include"
     });
 
     if (!response.ok) {
