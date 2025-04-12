@@ -5,7 +5,7 @@ import rehypeRaw from 'rehype-raw';
 import '../index.css';
 
 // Add API URL constant at the top
-const API_URL = 'https://echo-chat-production.up.railway.app';
+const API_URL = 'https://echolearn-production.up.railway.app';
 
 // Add the sendQuery function
 const sendQuery = async (question, chatHistory) => {
