@@ -130,16 +130,11 @@ if __name__ == "__main__":
     import uvicorn
     print("Starting Echo Chat API development server...")
     print("\nAPI Documentation available at:")
-    print("- Swagger UI: http://127.0.0.1:8000/docs")
-    print("- ReDoc: http://127.0.0.1:8000/redoc")
-    print("\nServer running at: http://127.0.0.1:8000")
     print("\nPress Ctrl+C to stop the server")
     
     uvicorn.run(
         "app:app",
-        host="127.0.0.1",  # Changed from 0.0.0.0 to 127.0.0.1 for local development
-        port=8000,
+        host="0.0.0.0",  # Changed from 0.0.0.0 to 127.0.0.1 for local development
+        port=int(os.environ.get("PORT", 8000)),
         reload=True,  # Enable auto-reload for development
-        workers=1,    # Single worker for development
-        log_level="info"
     )
