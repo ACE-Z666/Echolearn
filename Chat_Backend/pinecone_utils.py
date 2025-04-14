@@ -14,13 +14,15 @@ if not PINECONE_API_KEY:
 
 INDEX_NAME = "echo-chat-index"
 NAMESPACE = "pdf-namespace"
-PINECONE_HOST = "https://echo-chat-index-eywzr5c.svc.aped-4627-b74a.pinecone.io"
 
 def init_pinecone():
     """Initialize Pinecone client and create index if it doesn't exist"""
-    pinecone.init(api_key=PINECONE_API_KEY)
+    pinecone.init(      
+        api_key=PINECONE_API_KEY,
+        environment="gcp-starter"  # this is the environment for starter projects
+    )
     
-    return pinecone.Index(host=PINECONE_HOST)
+    return pinecone.Index(INDEX_NAME)
 
 def get_embedding_model():
     """Get the embedding model"""
