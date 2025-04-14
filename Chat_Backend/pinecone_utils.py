@@ -14,10 +14,11 @@ if not PINECONE_API_KEY:
 
 INDEX_NAME = "echo-chat-index"
 NAMESPACE = "pdf-namespace"
+PINECONE_ENV = "us-east-1"  # Required for connecting to Pinecone
 
 def init_pinecone():
     """Initialize Pinecone client and create index if it doesn't exist"""
-    pinecone.init(api_key=PINECONE_API_KEY)
+    pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENV)
 
     # Create index if it doesn't exist
     if INDEX_NAME not in pinecone.list_indexes():
