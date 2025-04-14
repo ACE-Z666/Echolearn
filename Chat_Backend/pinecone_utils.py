@@ -1,6 +1,6 @@
 import os
 from typing import List, Dict, Any
-import pinecone  # ✅ updated import
+from pinecone import Pinecone  # Updated import
 from langchain.embeddings import HuggingFaceEmbeddings
 from dotenv import load_dotenv
 
@@ -14,21 +14,20 @@ if not PINECONE_API_KEY:
 
 INDEX_NAME = "echo-chat-index"
 NAMESPACE = "pdf-namespace"
-PINECONE_ENV = "us-east-1" 
 
 def init_pinecone():
     """Initialize Pinecone client and create index if it doesn't exist"""
-    pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENV)  # ✅ updated init
+    pc = Pinecone(api_key=PINECONE_API_KEY)
 
     # Create index if it doesn't exist
-    if INDEX_NAME not in pinecone.list_indexes():
-        pinecone.create_index(
+    if INDEX_NAME not in pc.list_indexes().names():
+        pc.create_index(
             name=INDEX_NAME,
             dimension=384,  # assuming embedding size from MiniLM
             metric="cosine"
         )
 
-    return pinecone.Index(INDEX_NAME)  # ✅ updated index init
+    return pc.Index(INDEX_NAME)
 
 def get_embedding_model():
     """Get the embedding model"""
