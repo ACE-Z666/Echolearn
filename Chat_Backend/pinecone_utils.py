@@ -3,9 +3,14 @@ from typing import List, Dict, Any
 import pinecone
 from langchain.embeddings import HuggingFaceEmbeddings
 from dotenv import load_dotenv
+import logging
 
 # Load environment variables from .env file
 load_dotenv()
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Setup constants
 PINECONE_API_KEY = os.environ.get("PINECONE_API_KEY")
@@ -14,6 +19,7 @@ if not PINECONE_API_KEY:
 
 INDEX_NAME = "echo-chat-index"
 NAMESPACE = "pdf-namespace"
+MODEL_CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".model_cache")
 
 def init_pinecone():
     """Initialize Pinecone client and create index if it doesn't exist"""
@@ -25,11 +31,19 @@ def init_pinecone():
     return pinecone.Index(INDEX_NAME)
 
 def get_embedding_model():
-    """Get the embedding model"""
-    return HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2",
-        cache_folder="./model_cache"
-    )
+    """Get the embedding model with persistent caching"""
+    try:
+        # Create cache directory if it doesn't exist
+        os.makedirs(MODEL_CACHE_DIR, exist_ok=True)
+        logger.info(f"Using model cache directory: {MODEL_CACHE_DIR}")
+        
+        return HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-MiniLM-L6-v2",
+            cache_folder=MODEL_CACHE_DIR
+        )
+    except Exception as e:
+        logger.error(f"Error loading embedding model: {str(e)}")
+        raise RuntimeError(f"Failed to load embedding model: {str(e)}")
 
 def upsert_documents(documents: List[Dict[str, Any]]):
     """Upsert documents to Pinecone"""
