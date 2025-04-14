@@ -60,6 +60,7 @@ if not OPENROUTER_API_KEY:
 # Request/Response Models
 class QueryRequest(BaseModel):
     query: str
+    chat_history: Optional[List[Dict[str, Any]]] = []
 
 class QueryResponse(BaseModel):
     answer: str

@@ -4,13 +4,10 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import '../index.css';
 
-// Add API URL constant at the top
-const API_URL = 'https://echolearn-production.up.railway.app';
-
 // Add the sendQuery function
 const sendQuery = async (question, chatHistory) => {
   try {
-    const response = await fetch(API_URL + "/api/query", {
+    const response = await fetch("https://echolearn-ai.onrender.com/api/query", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -22,8 +19,7 @@ const sendQuery = async (question, chatHistory) => {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`HTTP error! status: ${response.status}, response: ${errorText}`);
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
