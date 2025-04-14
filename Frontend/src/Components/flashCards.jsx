@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import '../index.css';
-import Rectblur from './rectblur';
+import Rectblur from './Rectblur';
 
 const FlashCards = () => {
   const [selectedFile, setSelectedFile] = useState(null);

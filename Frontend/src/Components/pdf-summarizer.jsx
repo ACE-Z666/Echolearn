@@ -4,7 +4,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw"; // Allow rendering raw HTML in Markdown
 import remarkGfm from "remark-gfm"; // Enable GitHub-style Markdown (tables, strikethrough, etc.)
 import "../index.css";
-import Rectblur from "./rectblur";
+import Rectblur from "./Rectblur";
 
 
 const PDFProcessor = () => {

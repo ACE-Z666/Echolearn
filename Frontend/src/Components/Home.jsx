@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Rectblur from './rectblur.jsx';
+import Rectblur from './Rectblur.jsx';
 import Navbar from "./Navbar.jsx";
 import { useAuth } from '../context/AuthContext';
 
