@@ -14,21 +14,13 @@ if not PINECONE_API_KEY:
 
 INDEX_NAME = "echo-chat-index"
 NAMESPACE = "pdf-namespace"
-PINECONE_ENV = "us-east-1"  # Required for connecting to Pinecone
+PINECONE_HOST = "https://echo-chat-index-eywzr5c.svc.aped-4627-b74a.pinecone.io"
 
 def init_pinecone():
     """Initialize Pinecone client and create index if it doesn't exist"""
-    pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENV)
-
-    # Create index if it doesn't exist
-    if INDEX_NAME not in pinecone.list_indexes():
-        pinecone.create_index(
-            name=INDEX_NAME,
-            dimension=384,  # assuming embedding size from MiniLM
-            metric="cosine"
-        )
-
-    return pinecone.Index(INDEX_NAME)
+    pinecone.init(api_key=PINECONE_API_KEY)
+    
+    return pinecone.Index(host=PINECONE_HOST)
 
 def get_embedding_model():
     """Get the embedding model"""
