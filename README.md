@@ -25,8 +25,8 @@
 ### Backend
 - **Django** & **Django REST Framework**
 - PDF processing with `PyMuPDF`
-- DeepSeek R1 API for note structuring
-- TinyBERT for Q&A generation
+- Gemini 2.5 Pro API for note structuring
+- Gemini 2.5 Pro  API for Q&A generation
 - MongoDB for user data
 - PineconeDB for vector similarity searches
 
@@ -36,16 +36,16 @@
 
 1. **PDF Upload**  
    → Processed page-by-page → Converted to Markdown  
-   → Sent to **DeepSeek R1** model  
+   → Sent to **Gemini 2.5 Pro** model  
    → Output: Simplified structured notes 📘
 
 2. **Q&A Generator**  
    → Embedded text from PDF  
-   → Processed via **TinyBERT**  
+   → Processed via **Gemini 2.5 Pro**  
    → Generates potential exam-style questions
 
 3. **Chat with Echo**  
-   → Ask questions based on your notes  
+   → Ask questions based on your notes AI Model used is **Mistral AI Small 24B**  
    → Echo responds with context-aware answers using PineconeDB
 
 ---
