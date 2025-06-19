@@ -125,3 +125,15 @@ async def query(request: QueryRequest):
             error=f"An unexpected error occurred: {str(e)}"
         )
 
+if __name__ == "__main__":
+    import uvicorn
+    print("Starting Echo Chat API development server...")
+    print("\nAPI Documentation available at:")
+    print("\nPress Ctrl+C to stop the server")
+    
+    uvicorn.run(
+        "app:app",
+        host="0.0.0.0",  # Changed from 0.0.0.0 to 127.0.0.1 for local development
+        port=10000,
+        reload=True,  # Enable auto-reload for development
+    )
