@@ -12,7 +12,7 @@ import Motivator from './Components/Motivator'
 
 const App = () => {
   return (
-    <div className="app-container">
+    <div className="">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

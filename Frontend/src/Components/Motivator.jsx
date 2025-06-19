@@ -6,9 +6,10 @@ const Motivator = () => {
   const [motivation, setMotivation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  require('dotenv').config();
   // Using the same API configuration as the PDF Summarizer
-  const API_KEY = "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";
-  const API_URL = "https://openrouter.ai/api/v1/chat/completions";
+const API_KEY = process.env.API_KEY;
+const API_URL= process.env.API_URL;
 
   const formatPrompt = (problem) => {
     return `As a motivational coach, provide encouragement for this problem: "${problem}"
