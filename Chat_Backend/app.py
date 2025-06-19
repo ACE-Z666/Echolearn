@@ -46,7 +46,7 @@ app = FastAPI(
 # Configure CORS for Railway deployment
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://echolearn-i7u7.onrender.com", "http://localhost:5173"],  # Allow all origins
+    allow_origins=["http://localhost:5173"],  # Allow all origins
     allow_methods=["*"],
     allow_headers=["*"],
 )
