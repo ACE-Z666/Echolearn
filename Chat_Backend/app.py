@@ -43,7 +43,6 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Configure CORS for Railway deployment
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],  # Allow all origins
