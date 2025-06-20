@@ -46,6 +46,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "https://echolearn-git-hostv-ace-z666s-projects.vercel.app"],  # Allow all origins
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
