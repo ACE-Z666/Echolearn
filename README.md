@@ -4,9 +4,9 @@
 
 **Transform the Way You Learn with AI-Powered Study Tools**
 
-[![Home](https://res.cloudinary.com/dl6b9yya3/image/upload/v1766854408/Screenshot_2025-04-01_121128_uetd8e.png)]
-[![Project](https://res.cloudinary.com/dl6b9yya3/image/upload/v1766854427/Screenshot_2025-04-01_113333_nelamf.png)]
-[![Login](https://res.cloudinary.com/dl6b9yya3/image/upload/v1766854418/Screenshot_2025-04-01_113542_ovm6yd.png)]
+[Home](https://res.cloudinary.com/dl6b9yya3/image/upload/v1766854408/Screenshot_2025-04-01_121128_uetd8e.png)
+[Project](https://res.cloudinary.com/dl6b9yya3/image/upload/v1766854427/Screenshot_2025-04-01_113333_nelamf.png)
+[Login](https://res.cloudinary.com/dl6b9yya3/image/upload/v1766854418/Screenshot_2025-04-01_113542_ovm6yd.png)
 
 [Features](#-features) • [Demo](#-demo) • [Installation](#-installation) • [Usage](#-usage) • [Architecture](#-architecture) • [Contributing](#-contributing)
 
