@@ -629,27 +629,23 @@ If you discover a security vulnerability, please email security@echolearn.com. D
 
 ---
 
-## 🗺️ Roadmap
+## 🗺️ Roadmap(6 - Month Project)
 
-### Q1 2025
+### Q3 2025
 - [ ] Mobile app (React Native)
 - [ ] Collaborative study groups
 - [ ] Advanced analytics dashboard
 - [ ] Voice-to-text note taking
-
-### Q2 2025
 - [ ] Browser extension for instant summarization
 - [ ] Integration with popular LMS platforms
 - [ ] Multi-language support (Spanish, French, German)
 - [ ] Gamification features (badges, leaderboards)
 
-### Q3 2025
+### Q4 2025
 - [ ] AI-powered study schedule optimization
 - [ ] Video content summarization
 - [ ] Peer-to-peer flashcard sharing
 - [ ] Advanced progress tracking
-
-### Q4 2025
 - [ ] Whiteboard collaboration tool
 - [ ] Live tutoring sessions
 - [ ] AR flashcard visualization
@@ -692,29 +688,26 @@ SOFTWARE.
 **Abhijith J Nair**  
 Project Creator & Lead Developer
 
-- GitHub: [@ACE-Z666](https://github.com/ACE-Z666)
+**Ashwin M**
+Frontened Developer
+
+**Anupriya A Pillai**
+Ui Designer and Frontend Developer
+
+**VR Athira**
+UI Designer & Documentation Lead 
+
 - Project: [EchoLearn](https://github.com/ACE-Z666/Echolearn)
 
 ---
 
 ## 🙏 Acknowledgments
 
-- Google for providing the Gemini API
+- Open Routers for providing the Gemini API Experimental version
 - Mistral AI for the conversational AI model
 - Pinecone for vector database infrastructure
 - The open-source community for incredible tools and libraries
 - All contributors who help improve EchoLearn
-
----
-
-## 📞 Support
-
-Need help? Here's how to get support:
-
-- 📧 Email: support@echolearn.com
-- 💬 Discord: [Join our community](https://discord.gg/echolearn)
-- 📖 Documentation: [docs.echolearn.com](https://docs.echolearn.com)
-- 🐛 Bug Reports: [GitHub Issues](https://github.com/ACE-Z666/Echolearn/issues)
 
 ---
 
@@ -728,7 +721,7 @@ If you find EchoLearn helpful, please consider giving it a star! ⭐
 
 <div align="center">
 
-**Made with ❤️ by students, for students**
+**Made with ❤️ by Abhijith J Nair, Ashwin M, Anupriya A Pillai and VR Athira for students**
 
 [⬆ Back to Top](#echolearn-)
 
