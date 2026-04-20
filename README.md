@@ -12,6 +12,7 @@
 - 📄 **Automated PDF-to-Markdown pipeline** — PDFs are parsed page-by-page using **PyMuPDF (fitz)**, then passed to **Gemini 2.5 Pro** which structures raw academic text into clean, readable Markdown notes.
 - 🤖 **RAG-powered Chat** — User queries are embedded via `sentence-transformers/all-MiniLM-L6-v2`, matched against a Pinecone vector index (cosine similarity), and answered by **Mistral Small 3.1 24B** via OpenRouter.
 - 🃏 **AI Flashcard Generation** — Gemini 2.5 Pro generates exam-style question-answer flashcard pairs directly from uploaded PDFs.
+- 🔋 **Mr. Motivator** — Daily motivational quotes module to keep students energised and on track during study sessions.
 - 🔐 **Secure Auth** — JWT-based authentication with MongoDB persistence via a dedicated Node.js/Express backend.
 
 ---
