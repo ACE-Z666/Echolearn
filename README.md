@@ -15,7 +15,7 @@
 - 🔋 **Mr. Motivator** — Daily motivational quotes module to keep students energised and on track during study sessions.
 - 🔐 **Secure Auth** — JWT-based authentication with MongoDB persistence via a dedicated Node.js/Express backend.
 
----
+------
 
 ## 🛠️ Tech Stack
 
